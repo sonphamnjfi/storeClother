@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: sonph
   Date: 01/12/2021
-  Time: 11:07 AM
+  Time: 12:07 AM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reset Password</title>
+    <title>Edit customer</title>
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
@@ -21,28 +21,30 @@
 <div class="container col-md-5">
     <div class="card">
         <div class="card-body">
-            <form action="editpass" method="get">
+            <form action="editacc" method="get">
                 <caption>
-                    <h2 style="text-align:center" >Reset pass</h2>
+                    <h2 style="text-align:center" >Edit Custumer</h2>
                 </caption>
                 <fieldset class="form-group">
-                    <label>Username</label>
-                    <input type="text" value="<c:out value='${us}' />" class="form-control" name="us" required="required" readonly>
+                    <label>ID Code</label> <input type="text" value="${ac.username}" class="form-control" name="us" required="required" readonly>
                 </fieldset>
                 <fieldset class="form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-control" name="pass" required="required">
+                    <label>Code Name</label> <input type="text" value="${ac.name}" class="form-control" name="name" required="required">
                 </fieldset>
+
                 <fieldset class="form-group">
-                    <label>New Password</label>
-                    <input type="password" class="form-control" name="newpass" required="required">
+                    <label>Total</label> <input type="text" value="${ac.phone}" class="form-control" name="phone" required="required">
                 </fieldset>
+
                 <fieldset class="form-group">
-                    <label>Nhap lai Password</label>
-                    <input type="password" class="form-control" name="newpass1" required="required">
+                    <label>Discount</label> <input type="text" value="${ac.adress}" class="form-control" name="adress" required="required">
                 </fieldset>
-                <p class="text-danger">${mess}</p>
-                <button type="submit" class="btn btn-success">Reset</button>
+
+                <fieldset class="form-group">
+                    <label>Password</label> <input type="hidden" name="password" class="form-control" value="${ac.pass}" required="required">
+                </fieldset>
+
+                <button type="submit" class="btn btn-success">Save</button>
             </form>
         </div>
     </div>

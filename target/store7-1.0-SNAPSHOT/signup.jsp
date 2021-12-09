@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: sonph
-  Date: 11/01/2021
-  Time: 11:07 AM
+  Date: 01/12/2021
+  Time: 10:02 AM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
@@ -28,6 +28,18 @@
                 <fieldset class="form-group">
                     <label>Username</label>
                     <input type="text" class="form-control" name="us" required="required" >
+                </fieldset>
+                <fieldset class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" name="name" required="required" >
+                </fieldset>
+                <fieldset class="form-group">
+                    <label>Phone</label>
+                    <input type="text" class="form-control" name="phone" required="required" >
+                </fieldset>
+                <fieldset class="form-group">
+                    <label>Adress</label>
+                    <input type="text" class="form-control" name="adress" required="required" >
                 </fieldset>
                 <fieldset class="form-group">
                     <label>Password</label>

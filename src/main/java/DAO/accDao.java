@@ -1,7 +1,7 @@
 package DAO;
 
 import connect.connectDB;
-import entity.account;
+import entity.acc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,14 +9,14 @@ import java.sql.ResultSet;
 
 public class accDao {
 
-    public  accDao() {}
+    public accDao() {}
 
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    public account login(String us, String pass) {
-        String query = "select * from acc where username = ? and pass = ?";
+    public acc login(String us, String pass) {
+        String query = "select * from customer where username = ? and password = ?";
         try {
             conn = new connectDB().getMySQLConnection();
             ps = conn.prepareStatement(query);
@@ -24,46 +24,51 @@ public class accDao {
             ps.setString(2,pass);
             rs = ps.executeQuery();
             while (rs.next()) {
-                return new account(rs.getString(1),
+                return new acc(rs.getString(1),
                         rs.getString(2),
-                        rs.getInt(3),
-                        rs.getInt(4));
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5));
             }
         }catch (Exception e) {}
         return null;
     }
 
-    public account check(String us) {
-        String query = "select * from acc where username = ? ";
+    public acc check(String us) {
+        String query = "select * from customer where username = ? ";
         try {
             conn = new connectDB().getMySQLConnection();
             ps = conn.prepareStatement(query);
             ps.setString(1,us);
             rs = ps.executeQuery();
             while (rs.next()) {
-                return new account(rs.getString(1),
+                return new acc(rs.getString(1),
                         rs.getString(2),
-                        rs.getInt(3),
-                        rs.getInt(4));
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5));
             }
         }catch (Exception e) {}
         return null;
     }
 
-    public void signup(String us, String pass) {
-        String query = "insert into acc values(?,?,0,0)";
+    public void signup(acc a) {
+        String query = "insert into customer VALUES(? , ?, ?,?,?)";
         try {
             conn = new connectDB().getMySQLConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, us);
-            ps.setString(2, pass);
+            ps.setString(1, a.getUsername());
+            ps.setString(2, a.getPass());
+            ps.setString(3, a.getName());
+            ps.setString(4, a.getPhone());
+            ps.setString(5, a.getAddress());
             ps.executeUpdate();
         } catch (Exception e) {
         }
     }
 
     public void resetpass( String us, String pass ) {
-        String query = "update acc set pass = ? where username = ?";
+        String query = "update customer set password = ? where username = ?";
         try {
             conn = new connectDB().getMySQLConnection();
             ps = conn.prepareStatement(query);
@@ -73,18 +78,33 @@ public class accDao {
         }catch (Exception e) {}
     }
 
+    public void update(acc a) {
+        String query = "update customer set password = ? , NAME= ? , phone= ? , address= ? ,where username = ? ";
+        try {
+            conn = new connectDB().getMySQLConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, a.getPass());
+            ps.setString(2, a.getName());
+            ps.setString(3, a.getPhone());
+            ps.setString(4, a.getAddress());
+            ps.setString(5, a.getUsername());
+            ps.executeUpdate();
+        }catch (Exception e) {}
+    }
+
 
     public static void main(String[] args) {
         accDao ad = new accDao();
-//        // test acc
-//        account ac = ad.login("admin1", "khongcopass");
-//        System.out.print(ac);
+        acc b = ad.login("kh10", "123");
+        System.out.println(b);
         // test check
-//        account ac = ad.check("nhanvien1");
+//        acc ac = ad.check("kh01");
 //        System.out.println(ac);
-//        ad.signup("test1", "passtest");
+//        acc b = new acc("agfh", "ah", "aa", "093048" , "uiy");
+//        ad.signup(b);
 //        // test resetpass
-//        ad.resetpass("admin1", "pass");
+//        ad.resetpass("kh05", "huhu");
     }
+
 
 }

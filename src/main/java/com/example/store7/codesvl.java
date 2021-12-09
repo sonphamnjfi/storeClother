@@ -1,9 +1,13 @@
 package com.example.store7;
 
-import DAO.CodeDao;
 import DAO.accDao;
-import entity.account;
-import entity.code;
+import DAO.addDao;
+import DAO.cartDao;
+import DAO.productDao;
+import entity.acc;
+import entity.addItem;
+import entity.cart;
+import entity.product;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,12 +24,16 @@ import java.util.List;
 public class codesvl extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private CodeDao cd;
     private accDao ad;
+    private DAO.productDao pd;
+    private DAO.addDao addDao;
+    private DAO.cartDao cartDao;
 
     public codesvl() {
-        this.cd = new CodeDao();
         this.ad = new accDao();
+        this.pd = new productDao();
+        this.addDao = new addDao();
+        this.cartDao = new cartDao();
     }
 
     @Override
@@ -33,13 +41,8 @@ public class codesvl extends HttpServlet {
         String action = request.getServletPath();
         try {
             switch(action) {
-            case "/new" :
-                formnew(request, response);
-                break;
             case "/loginacc":
                 loginacc(request,response);
-            case "/list" :
-                listcode(request, response);
                 break;
             case "/newacc" :
                 formnewacc(request, response);
@@ -53,27 +56,108 @@ public class codesvl extends HttpServlet {
             case "/editpass":
                 editpass(request, response);
                 break;
+            case "/formeditacc":
+                formeditacc(request, response);
+                break;
+            case "/editacc":
+                editacc(request, response);
+                break;
             case "/logout" :
                 logout(request, response);
                 break;
-            case "/add" :
-                addCode(request, response);
+            case "/home" :
+                home(request, response);
                 break;
-            case "/edit" :
-                formedit(request, response);
+            case "/cart" :
+                showCart(request, response);
                 break;
-            case "/update" :
-                updateCode(request, response);
+            case "/addcart" :
+                addCart(request, response);
                 break;
-            case "/delete":
-                delCode(request, response);
+            case "/product" :
+                pd(request, response);
                 break;
             default :
-//                listcode(request, response);
+//                home(request, response);
                 login(request, response);
                 break;
             }
         }catch(Exception e) {}
+    }
+
+    private void pd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+        product p = pd.getp(id);
+        request.setAttribute("p", p);
+        request.getRequestDispatcher("product.jsp").forward(request, response);
+    }
+
+    private void addCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String username = request.getParameter("username");
+        int pid = Integer.parseInt(request.getParameter("id"));
+        // kiem tra xem da co san pham trong gio hang chua
+        addItem ai = addDao.check(username,pid);
+        int amount = 1;
+        // get gia san pham
+        product p = pd.getp(String.valueOf(pid));
+        long total =p.getPrice();
+
+        // tang tien trong gio hang
+        cart c = cartDao.check(username);
+        if(c == null){
+            c = new cart(username,total);
+            cartDao.addc(c);
+        }else {
+            total += c.getTotal();
+            c.setTotal(total);
+            cartDao.update(c);
+        }
+        // tang so luong san pham
+        if(ai== null){
+            ai = new addItem(username,pid,amount);
+            addDao.addi(ai);
+        }else{
+            amount += ai.getAmount();
+            ai.setAmount(amount);
+            addDao.update(ai);
+        }
+        response.sendRedirect("home");
+    }
+
+    private void formeditacc(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("editacc.jsp").forward(request, response);
+    }
+
+    private void showCart(HttpServletRequest request, HttpServletResponse response) {
+        String username = request.getParameter("username");
+        cart c = cartDao.check(username);
+        long total;
+        if (c == null) {
+            total = 0;
+        }else {
+            total = c.getTotal();
+        }
+        HttpSession ss = request.getSession();
+        ss.setAttribute("total", total);
+
+    }
+
+    private void editacc(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String username = request.getParameter("us");
+        String password = request.getParameter("password");
+        String name = request.getParameter("name");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
+        acc newacc = new acc(username, password, name, phone, address);
+        ad.update(newacc);
+        response.sendRedirect("home");
+    }
+
+    private void home(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<product> listp = new ArrayList<product>();
+        listp = pd.getProducts();
+        request.setAttribute("listP", listp);
+        request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 
     private void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -83,19 +167,15 @@ public class codesvl extends HttpServlet {
     private void loginacc(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String us = request.getParameter("us");
         String pass = request.getParameter("pass");
-        account ac = ad.login(us, pass);
+        acc ac = ad.login(us, pass);
         if (ac == null) {
             request.setAttribute("mess","nhap sai pass hoac username");
             request.getRequestDispatcher("login.jsp").forward(request, response);
-        } else if(ac.getIdsell() >0){
+        } else {
             HttpSession ss = request.getSession();
-            ss.setAttribute("us" , us);
-            ss.setAttribute("pass" , pass);
+            ss.setAttribute("ac" , ac);
             ss.setMaxInactiveInterval(1000);
-            response.sendRedirect("list");
-        }else {
-            request.setAttribute("mess","ban khong phai nhan vien");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            response.sendRedirect("home");
         }
     }
 
@@ -111,7 +191,15 @@ public class codesvl extends HttpServlet {
         String us = request.getParameter("us");
         String pass = request.getParameter("pass");
         String pass1 = request.getParameter("pass1");
-        account ac = ad.check(us);
+        String name = request.getParameter("name");
+        String phone = request.getParameter("phone");
+        String adress = request.getParameter("adress");
+        acc b = new acc();
+        b.setUsername(us);
+        b.setAddress(adress);
+        b.setPhone(phone);
+        b.setName(name);
+        acc ac = ad.check(us);
         if(!pass.equals(pass1)) {
             request.setAttribute("mess","2 pass khac nhau");
             request.getRequestDispatcher("signup.jsp").forward(request, response);
@@ -119,8 +207,9 @@ public class codesvl extends HttpServlet {
             request.setAttribute("mess","username da ton tai");
             request.getRequestDispatcher("signup.jsp").forward(request, response);
         } else {
-            ad.signup(us, pass);
-            request.getRequestDispatcher("signup.jsp").forward(request, response);
+            b.setPass(pass);
+            ad.signup(b);
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 
@@ -129,7 +218,7 @@ public class codesvl extends HttpServlet {
         String pass = request.getParameter("pass");
         String newpass = request.getParameter("newpass");
         String newpass1 = request.getParameter("newpass1");
-        account ac = ad.login(us, pass);
+        acc ac = ad.login(us, pass);
         if (ac == null){
             request.setAttribute("mess","nhap sai pass");
             request.getRequestDispatcher("editpass.jsp").forward(request, response);
@@ -138,62 +227,12 @@ public class codesvl extends HttpServlet {
             request.getRequestDispatcher("editpass.jsp").forward(request, response);
         }else{
             ad.resetpass(us, newpass);
-            response.sendRedirect("list");
+            response.sendRedirect("home");
         }
     }
 
     private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("login.jsp").forward(request, response);
-    }
-
-    private void delCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String id = request.getParameter("id");
-        cd.delete(id);
-        response.sendRedirect("list");
-    }
-
-    private void updateCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String id = request.getParameter("idcode");
-        String name = request.getParameter("name");
-        Long total = Long.parseLong(request.getParameter("total"));
-        Long dis = Long.parseLong(request.getParameter("dis"));
-        Date begin = Date.valueOf(request.getParameter("begin"));
-        Date end = Date.valueOf(request.getParameter("end"));
-        //set code to database
-        code code1 = new code(id, name, total, dis, begin,end);
-        cd.update(code1);
-        response.sendRedirect("list");
-    }
-
-    private void formedit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = request.getParameter("id");
-        code code1 = cd.getcode(id);
-        request.setAttribute("code", code1);
-        request.getRequestDispatcher("editcode.jsp").forward(request, response);
-    }
-
-    private void addCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String id = request.getParameter("idcode");
-        String name = request.getParameter("name");
-        Long total = Long.parseLong(request.getParameter("total"));
-        Long dis = Long.parseLong(request.getParameter("dis"));
-        Date begin = Date.valueOf(request.getParameter("begin"));
-        Date end = Date.valueOf(request.getParameter("end"));
-        //set code to database
-        code code1 = new code(id, name, total, dis, begin,end);
-        cd.add(code1);
-        response.sendRedirect("list");
-    }
-
-    private void listcode(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<code> code1 = new ArrayList<code>();
-        code1 = cd.getall();
-        request.setAttribute("listcode", code1);
-        request.getRequestDispatcher("formlist.jsp").forward(request, response);
-    }
-
-    private void formnew(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getRequestDispatcher("newcode.jsp").forward(request, response);
     }
 
     @Override

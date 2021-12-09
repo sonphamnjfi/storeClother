@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class connectDB {
 
     private final static String hostName = "localhost";
-    private final static String dbName = "stores";
+    private final static String dbName = "storeclo";
     private final static String userName = "root";
     private final static String password = "San479420";
 
