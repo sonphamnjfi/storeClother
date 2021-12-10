@@ -17,8 +17,8 @@ public class cartDao {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    public cart check(String username) {
-        String query = "select * from cart where username = ?";
+    public cart check(String username ) {
+        String query = "select * from cart where username = ? ";
         try {
             conn = new connectDB().getMySQLConnection();
             ps = conn.prepareStatement(query);
@@ -44,7 +44,7 @@ public class cartDao {
     }
 
     public void update( cart c ) {
-        String query = "update customer set total_price = ? where username = ?";
+        String query = "update cart set total_price = ? where username = ?";
         try {
             conn = new connectDB().getMySQLConnection();
             ps = conn.prepareStatement(query);

@@ -7,6 +7,8 @@ import entity.addItem;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class addDao {
     public addDao() {}
@@ -53,6 +55,23 @@ public class addDao {
             ps.setString(2, a.getUsername());
             ps.executeUpdate();
         }catch (Exception e) {}
+    }
+
+    public List<addItem> getaddItems(String username) {
+        List<addItem> list = new ArrayList<addItem>();
+        String query = "select * from add_item where username = ? ";
+        try {
+            conn = new connectDB().getMySQLConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1,username);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new addItem(rs.getString(1),
+                        rs.getInt(2),
+                        rs.getInt(3)));
+            }
+        }catch (Exception e) {}
+        return list;
     }
 
     public static void main(String[] args) {

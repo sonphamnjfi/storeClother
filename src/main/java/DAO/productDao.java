@@ -38,6 +38,28 @@ public class productDao {
         return list;
     }
 
+    public List<product> getcart(String username) {
+        List<product> list = new ArrayList<product>();
+        String query = "SELECT product.id,product.name, product.price, product.size, product.description FROM product\n" +
+                "INNER JOIN add_item ON product.id = add_item.product_id\n" +
+                "INNER JOIN customer ON add_item.username = customer.username\n" +
+                "WHERE customer.username = ?";
+        try{
+            conn = new connectDB().getMySQLConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, username);
+            rs=ps.executeQuery();
+            while (rs.next()) {
+                list.add(new product(rs.getInt(1),
+                        rs.getString(2),
+                        rs.getInt(3),
+                        rs.getString(4),
+                        rs.getString(5)));
+            }
+        }catch (Exception e) {}
+        return list;
+    }
+
     public product getp(String id) {
         String query = "select * from product where id = ?";
         try {

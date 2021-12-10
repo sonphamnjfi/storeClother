@@ -85,6 +85,10 @@ public class codesvl extends HttpServlet {
         }catch(Exception e) {}
     }
 
+    private void formeditacc(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("editacc.jsp").forward(request, response);
+    }
+
     private void pd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getParameter("id");
         product p = pd.getp(id);
@@ -124,12 +128,14 @@ public class codesvl extends HttpServlet {
         response.sendRedirect("home");
     }
 
-    private void formeditacc(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("editacc.jsp").forward(request, response);
-    }
 
-    private void showCart(HttpServletRequest request, HttpServletResponse response) {
+    private void showCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
+        List<product> listp = pd.getcart(username);
+        for(product pt:listp) {
+            addItem ai = addDao.check(username,pt.getId());
+            pt.setSize(String.valueOf(ai.getAmount()));
+        }
         cart c = cartDao.check(username);
         long total;
         if (c == null) {
@@ -137,9 +143,11 @@ public class codesvl extends HttpServlet {
         }else {
             total = c.getTotal();
         }
-        HttpSession ss = request.getSession();
-        ss.setAttribute("total", total);
-
+        request.setAttribute("listp" , listp);
+//        HttpSession ss = request.getSession();
+//        ss.setAttribute("total", total);
+        request.setAttribute("total", total);
+        request.getRequestDispatcher("cart.jsp").forward(request, response);
     }
 
     private void editacc(HttpServletRequest request, HttpServletResponse response) throws IOException {

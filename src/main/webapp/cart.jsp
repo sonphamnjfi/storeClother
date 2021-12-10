@@ -18,7 +18,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<header>
+<%--navbar--%>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container px-4 px-lg-5">
             <a class="navbar-brand" href="home">Store Clother</a>
@@ -42,11 +42,26 @@
             </div>
         </div>
     </nav>
-</header>
-<div class="container">
-    <div class="row">
-    </div>
-</div>
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    <c:forEach var="p" items="${listp}">
+        <tr>
+            <td><c:out value="${p.name}" /></td>
+            <td><c:out value="${p.price}" /></td>
+            <td><c:out value="${p.size}" /></td>
+                <a href="delete?id=${p.id}">Delete</a></td>
+        </tr>
+    </c:forEach>
+    </tbody>
+</table>
 <p>${total}</p>
 </body>
 </html>
