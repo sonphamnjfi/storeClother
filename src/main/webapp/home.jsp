@@ -26,13 +26,13 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link " href="cart?username=${ac.username}">Cart</a></li>
+                    <li class="nav-item"><a class="nav-link " href="cart">Cart</a></li>
                     <li class="nav-item dropdown justify-content-end">
                         <a class="nav-link dropdown-toggle" href="#" id="navbardrops"  data-toggle="dropdown">
-                            ${ac.username}
+                            ${sessionScope.ac.username}
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="formeditacc">Edit Account</a>
+                            <a class="dropdown-item" href="edit">Edit Account</a>
                             <a class="dropdown-item" href="editpass">Edit Password</a>
                             <a class="dropdown-item" href="logout">Log Out</a>
                         </div>
@@ -56,7 +56,7 @@
                             <p class="btn btn-danger">${o.price}</p>
                         </div>
                         <div class="col-md-6">
-                            <a href="addcart?id=${o.id}&username=${ac.username}" class="btn btn-success ">Add to cart</a>
+                            <a href="addcart?id=${o.id}" class="btn btn-success ">Add to cart</a>
                         </div>
                     </div>
                 </div>

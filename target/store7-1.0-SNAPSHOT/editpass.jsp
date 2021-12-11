@@ -27,7 +27,7 @@
                 </caption>
                 <fieldset class="form-group">
                     <label>Username</label>
-                    <input type="text" value="<c:out value='${us}' />" class="form-control" name="us" required="required" readonly>
+                    <input type="text" value="${sessionScope.username}" class="form-control" name="us" required="required" readonly>
                 </fieldset>
                 <fieldset class="form-group">
                     <label>Password</label>

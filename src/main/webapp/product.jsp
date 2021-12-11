@@ -32,7 +32,7 @@
                             ${ac.username}
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="editacc">Edit Account</a>
+                            <a class="dropdown-item" href="edit">Edit Account</a>
                             <a class="dropdown-item" href="editpass">Edit Password</a>
                             <a class="dropdown-item" href="logout">Log Out</a>
                         </div>

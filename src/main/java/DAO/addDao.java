@@ -47,12 +47,34 @@ public class addDao {
     }
 
     public void update( addItem a) {
-        String query = "update add_item set amount = ? where username = ?";
+        String query = "update add_item set amount = ? where username = ? and product_id = ?";
         try {
             conn = new connectDB().getMySQLConnection();
             ps = conn.prepareStatement(query);
             ps.setInt(1, a.getAmount());
             ps.setString(2, a.getUsername());
+            ps.setInt(3, a.getPID());
+            ps.executeUpdate();
+        }catch (Exception e) {}
+    }
+
+    public void delete( addItem a) {
+        String query = "delete from add_item where username = ? and product_id = ?";
+        try {
+            conn = new connectDB().getMySQLConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, a.getUsername());
+            ps.setInt(2, a.getPID());
+            ps.executeUpdate();
+        }catch (Exception e) {}
+    }
+
+    public void deleteall( String username) {
+        String query = "delete from add_item where username = ? ";
+        try {
+            conn = new connectDB().getMySQLConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, username);
             ps.executeUpdate();
         }catch (Exception e) {}
     }

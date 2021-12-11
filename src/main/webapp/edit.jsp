@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: sonph
-  Date: 01/12/2021
-  Time: 12:07 AM
+  Date: 11-12-2021
+  Time: 13:19
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
@@ -26,23 +26,24 @@
                     <h2 style="text-align:center" >Edit Custumer</h2>
                 </caption>
                 <fieldset class="form-group">
-                    <label>ID Code</label> <input type="text" value="${ac.username}" class="form-control" name="us" required="required" readonly>
+                <label>Username</label>
+                    <input type="text" value="${a.username}" class="form-control" name="us" required="required" readonly>
                 </fieldset>
                 <fieldset class="form-group">
-                    <label>Code Name</label> <input type="text" value="${ac.name}" class="form-control" name="name" required="required">
+                    <label>Name</label>
+                    <input type="text" value="${a.name}" class="form-control" name="name" required="required">
                 </fieldset>
 
                 <fieldset class="form-group">
-                    <label>Total</label> <input type="text" value="${ac.phone}" class="form-control" name="phone" required="required">
+                    <label>Phone</label>
+                    <input type="text" value="${a.phone}" class="form-control" name="phone" required="required">
                 </fieldset>
 
                 <fieldset class="form-group">
-                    <label>Discount</label> <input type="text" value="${ac.adress}" class="form-control" name="adress" required="required">
+                    <label>Address</label>
+                    <input type="text" value="${a.address}" class="form-control" name="address" required="required">
                 </fieldset>
-
-                <fieldset class="form-group">
-                    <label>Password</label> <input type="hidden" name="password" class="form-control" value="${ac.pass}" required="required">
-                </fieldset>
+                <input type="hidden" name="password" class="form-control" value="${a.pass}" required="required">
 
                 <button type="submit" class="btn btn-success">Save</button>
             </form>
@@ -51,3 +52,4 @@
 </div>
 </body>
 </html>
+

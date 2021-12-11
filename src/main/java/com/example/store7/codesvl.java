@@ -56,8 +56,8 @@ public class codesvl extends HttpServlet {
             case "/editpass":
                 editpass(request, response);
                 break;
-            case "/formeditacc":
-                formeditacc(request, response);
+            case "/edit":
+                edit(request, response);
                 break;
             case "/editacc":
                 editacc(request, response);
@@ -77,6 +77,15 @@ public class codesvl extends HttpServlet {
             case "/product" :
                 pd(request, response);
                 break;
+            case "/delete" :
+                delete(request, response);
+                break;
+            case "/pay" :
+                pay(request, response);
+                break;
+            case "/done" :
+                done(request, response);
+                break;
             default :
 //                home(request, response);
                 login(request, response);
@@ -85,8 +94,42 @@ public class codesvl extends HttpServlet {
         }catch(Exception e) {}
     }
 
-    private void formeditacc(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("editacc.jsp").forward(request, response);
+    private void pay(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession ss = request.getSession();
+        String username = ss.getAttribute("username").toString();
+        cart c = cartDao.check(username);
+        long total = c.getTotal();
+        request.setAttribute("total", total);
+        addDao.deleteall(username);
+        request.getRequestDispatcher("pay.jsp").forward(request, response);
+    }
+
+    private void done(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect("home");
+
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int pid = Integer.parseInt(request.getParameter("id"));
+        HttpSession ss = request.getSession();
+        String username = ss.getAttribute("username").toString();
+        addItem ai = addDao.check(username,pid);
+        cart c = cartDao.check(username);
+        product p = pd.getp(String.valueOf(pid));
+        long total = c.getTotal();
+        total-= p.getPrice()* ai.getAmount();
+        c.setTotal(total);
+        cartDao.update(c);
+        addDao.delete(ai);
+        response.sendRedirect("home");
+    }
+
+    private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession ss = request.getSession();
+        String username = ss.getAttribute("username").toString();
+        acc ac = ad.check(username);
+        request.setAttribute("a" , ac);
+        request.getRequestDispatcher("edit.jsp").forward(request, response);
     }
 
     private void pd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -97,7 +140,8 @@ public class codesvl extends HttpServlet {
     }
 
     private void addCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String username = request.getParameter("username");
+        HttpSession ss = request.getSession();
+        String username = ss.getAttribute("username").toString();
         int pid = Integer.parseInt(request.getParameter("id"));
         // kiem tra xem da co san pham trong gio hang chua
         addItem ai = addDao.check(username,pid);
@@ -128,9 +172,9 @@ public class codesvl extends HttpServlet {
         response.sendRedirect("home");
     }
 
-
     private void showCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String username = request.getParameter("username");
+        HttpSession ss = request.getSession();
+        String username = ss.getAttribute("username").toString();
         List<product> listp = pd.getcart(username);
         for(product pt:listp) {
             addItem ai = addDao.check(username,pt.getId());
@@ -182,7 +226,7 @@ public class codesvl extends HttpServlet {
         } else {
             HttpSession ss = request.getSession();
             ss.setAttribute("ac" , ac);
-            ss.setMaxInactiveInterval(1000);
+            ss.setAttribute("username" , us);
             response.sendRedirect("home");
         }
     }

@@ -79,7 +79,7 @@ public class accDao {
     }
 
     public void update(acc a) {
-        String query = "update customer set password = ? , NAME= ? , phone= ? , address= ? ,where username = ? ";
+        String query = "update customer set password = ? , NAME= ? , phone= ? , address= ? where username = ? ";
         try {
             conn = new connectDB().getMySQLConnection();
             ps = conn.prepareStatement(query);
@@ -95,13 +95,13 @@ public class accDao {
 
     public static void main(String[] args) {
         accDao ad = new accDao();
-        acc b = ad.login("kh10", "123");
-        System.out.println(b);
+//        acc b = ad.login("kh10", "123");
+//        System.out.println(b);
         // test check
 //        acc ac = ad.check("kh01");
 //        System.out.println(ac);
-//        acc b = new acc("agfh", "ah", "aa", "093048" , "uiy");
-//        ad.signup(b);
+        acc b = new acc("agfh", "ah", "adadad", "093048" , "uiy");
+        ad.update(b);
 //        // test resetpass
 //        ad.resetpass("kh05", "huhu");
     }
