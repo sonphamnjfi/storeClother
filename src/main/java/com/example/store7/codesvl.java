@@ -121,7 +121,7 @@ public class codesvl extends HttpServlet {
         c.setTotal(total);
         cartDao.update(c);
         addDao.delete(ai);
-        response.sendRedirect("home");
+        response.getWriter().write(total + "");
     }
 
     private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

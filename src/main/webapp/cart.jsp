@@ -12,10 +12,12 @@
 <html>
 <head>
     <title>Store</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" href="https://doinick.com/image/nro1sao.png">
+    <link href="https://doinick.com/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://doinick.com/css/main.css" rel="stylesheet" type="text/css">
+    <script src="https://doinick.com/vendor/jquery/jquery.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script src="https://azvang.com/vendor/notify/notify.js"></script>
 </head>
 <body>
 <%--navbar--%>
@@ -48,7 +50,7 @@
             <div class="row">
                 <div class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" >
                             <thead>
                             <tr>
                                 <th scope="col" class="border-0 bg-light">
@@ -79,7 +81,8 @@
                                     </th>
                                     <td class="align-middle"><strong>${o.price}</strong></td>
                                     <td class="align-middle"><strong>${o.size}</strong></td>
-                                    <td><a href="delete?id=${p.id}">Delete</a></td>
+                                    <!-- <td><a href="delete?id=${o.id}">Delete</a></td> -->
+                                    <td><button class="btn btn-sm btn-danger" onclick="fRemove(this, ${o.id})"><span class="fas fa-trash-alt"></span></button></td>
                                     </a>
                                     </td>
                                 </tr>
@@ -113,10 +116,10 @@
                     <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Thành tiền</div>
                     <div class="p-4">
                         <ul class="list-unstyled mb-4">
-                            <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tổng tiền hàng</strong><strong>${total}</strong></li>
+                            <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tổng tiền hàng</strong><strong class="total">${total}</strong></li>
                             <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Phí vận chuyển</strong><strong>Free ship</strong></li>
                             <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tổng thanh toán</strong>
-                                <h5 class="font-weight-bold">${total} ₫</h5>
+                                <h5 class="font-weight-bold total">${total} ₫</h5>
                             </li>
                         </ul><a href="pay" class="btn btn-dark rounded-pill py-2 btn-block">Mua hàng</a>
                     </div>
@@ -125,5 +128,24 @@
         </div>
     </div>
 </div>
+<script>
+
+    function fRemove(t, id){
+        var tr = $(t).parent().parent();
+        $.ajax({
+            url: "delete?id=" + id,
+            type: "get",
+            success: function(res){
+                $(".total").html(res);
+                $.notify("Xóa khỏi giỏ hàng thành công", {
+                    className: "success",
+                    position: "top-right"
+                });
+                tr.html("");
+            }
+        })
+    }
+</script>
+<script src="https://doinick.com/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

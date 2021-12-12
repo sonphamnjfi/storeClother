@@ -12,10 +12,12 @@
 <html>
 <head>
     <title>Store</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" href="https://doinick.com/image/nro1sao.png">
+    <link href="https://doinick.com/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://doinick.com/css/main.css" rel="stylesheet" type="text/css">
+    <script src="https://doinick.com/vendor/jquery/jquery.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script src="https://azvang.com/vendor/notify/notify.js"></script>
 </head>
 <body>
 <header>
@@ -43,7 +45,24 @@
         </div>
     </nav>
 </header>
-<div class="container">
+<div class="container mt-4 p-4">
+    <div clas="row">
+        <div class="col-8 offset-2">
+            <div class="text-center">
+                <h4 class="card-title">${p.name}</h4>
+            </div>
+            <div class="card">
+                <img class="card-img-top" src="${p.description}" alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text">${p.size}</p>
+                    <a href="javascript:void(0);" class="btn btn-info form-control" onclick="fAddCard(this, ${p.id})"><i class='fas fa-shopping-cart'></i> Thêm vào giỏ hàng</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--
     <div class="row">
             <div class="col-md-6">
                 <img src="${p.description}" >
@@ -62,6 +81,22 @@
                 </div>
             </div>
     </div>
+    -->
 </div>
+<script>
+    function fAddCard(t, id){
+        $.ajax({
+            url: "addcart?id=" + id,
+            type: "get",
+            success: function(res){
+                $.notify($(t), "Thêm vào giỏ hàng thành công", {
+                    className: "success",
+                    position: "top-center"
+                });
+            }
+        })
+    }
+</script>
+<script src="https://doinick.com/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -12,10 +12,14 @@
 <html>
 <head>
     <title>Store</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" href="https://doinick.com/image/nro1sao.png">
+    <link href="https://doinick.com/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://doinick.com/css/main.css" rel="stylesheet" type="text/css">
+    <script src="https://doinick.com/vendor/jquery/jquery.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <link href="https://doinick.com/css/nick.css" rel="stylesheet" type="text/css">
+    <script src="https://azvang.com/vendor/notify/notify.js"></script>
+
 </head>
 <body>
 <header>
@@ -38,15 +42,65 @@
                         </div>
                     </li>
                 </ul>
-
             </div>
         </div>
     </nav>
 </header>
 <div class="container">
+    <h2 class="text-center" style="margin-top: 100px">DANH SÁCH ÁO</h2>
+    <hr style="width: 10%; height: 2px" class="bg-info">
+    <div class="alert alert-info mt-2 mb-2">
+        Cửa hàng đang ưu đãi giảm giá áo <span class="text-danger font-weigth-bold">30%</span>
+    </div>
+    <div class="row">
+        <c:forEach items="${listP}" var="o" varStatus="loop">
+            <c:if test="${loop.index < 6}">
+            <div class="col-md-3 col-6" id="card-item" style="padding-right: 5px; padding-left: 5px">
+                <a href="product?id=${o.id}" style="text-decoration" >
+                    <input type="hidden" value="${o.id}" name="id" >
+                    <div class="card mb-3 box-shadow" style="color: black">
+                        <img class="card-img-top" src="${o.description}" alt="">
+                        <div class="card-body text-center">
+                            <p class="card-text font-weight-bold font-weight-bolder text-warning">${o.name}</p>
+                            <p class="text-center">Giá: ${o.price}đ</p>
+                            <a href="javascript:void(0);" class="btn btn-info form-control" onclick="fAddCard(this, ${o.id})"><i class='fas fa-shopping-cart'></i> Thêm vào giỏ hàng</a>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            </c:if>
+        </c:forEach>
+    </div>
+
+    <h2 class="text-center  mt-4">DANH SÁCH QUẦN</h2>
+    <hr style="width: 10%; height: 2px" class="bg-info">
+    <div class="alert alert-info mt-2 mb-2">
+        Cửa hàng đang ưu đãi giảm giá quần <span class="text-danger font-weigth-bold">30%</span>
+    </div>
+    <div class="row">
+        <c:forEach items="${listP}" var="o" varStatus="loop">
+            <c:if test="${loop.index >= 6}">
+                <div class="col-md-3 col-6" id="card-item" style="padding-right: 5px; padding-left: 5px">
+                    <a href="product?id=${o.id}" style="text-decoration">
+                        <input type="hidden" value="${o.id}" name="id" >
+                        <div class="card mb-3 box-shadow" style="color: black">
+                            <img class="card-img-top" src="${o.description}" alt="">
+                            <div class="card-body text-center">
+                                <p class="card-text font-weight-bold font-weight-bolder text-warning">${o.name}</p>
+                                <p class="text-center">Giá: ${o.price}đ</p>
+                                <a href="javascript:void(0);" class="btn btn-info form-control" onclick="fAddCard(this, ${o.id})"><i class='fas fa-shopping-cart'></i> Thêm vào giỏ hàng</a>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </c:if>
+        </c:forEach>
+    </div>
+
+    <!--
     <div class="row">
         <c:forEach items="${listP}" var="o">
-            <div class="col-md-6">
+            <div class="col-4">
                 <img style="width:75% ; height:75%;" src="${o.description}" >
                 <div>
                     <a class="panel-heading" href="product?id=${o.id}" title="view product">${o.name}</a>
@@ -63,6 +117,22 @@
             </div>
         </c:forEach>
     </div>
+    -->
 </div>
+<script>
+    function fAddCard(t, id){
+        $.ajax({
+            url: "addcart?id=" + id,
+            type: "get",
+            success: function(res){
+                $.notify($(t), "Thêm vào giỏ hàng thành công", {
+                    className: "success",
+                    position: "top-center"
+                });
+            }
+        })
+    }
+</script>
+<script src="https://doinick.com/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
